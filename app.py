@@ -115,6 +115,9 @@ with st.expander("Developer Debug Info"):
     st.write("Difficulty:", difficulty)
     st.write("History:", st.session_state.history)
 
+if "last_hint" in st.session_state and st.session_state.last_hint and st.session_state.show_hint_checkbox:
+    st.warning(st.session_state.last_hint)
+
 raw_guess = st.text_input(
     "Enter your guess:",
     key=f"guess_input_{difficulty}"
@@ -128,12 +131,21 @@ with col2:
 with col3:
     show_hint = st.checkbox("Show hint", key="show_hint_checkbox", value=True)
 
+# Detect checkbox change and rerun immediately
+if "prev_show_hint" not in st.session_state:
+    st.session_state.prev_show_hint = show_hint
+
+if show_hint != st.session_state.prev_show_hint:
+    st.session_state.prev_show_hint = show_hint
+    st.rerun()
+
 if new_game:
     st.session_state.attempts = 0
     st.session_state.secret = random.randint(low, high)
     st.session_state.status = "playing"
     st.session_state.score = 0
     st.session_state.history = []
+    st.session_state.last_hint = None
     st.success("New game started.")
     st.rerun()
 
@@ -156,7 +168,9 @@ if submit:
         outcome, message = check_guess(guess_int, st.session_state.secret)
 
         if show_hint:
-            st.warning(message)
+            st.session_state.last_hint = message
+        else:
+            st.session_state.last_hint = None
 
         st.session_state.score = update_score(
             current_score=st.session_state.score,
@@ -165,6 +179,7 @@ if submit:
         )
 
         if outcome == "Win":
+            st.session_state.last_hint = None
             st.balloons()
             st.session_state.status = "won"
             st.success(
@@ -173,6 +188,7 @@ if submit:
             )
         else:
             if st.session_state.attempts >= attempt_limit:
+                st.session_state.last_hint = None
                 st.session_state.status = "lost"
                 st.error(
                     f"Out of attempts! "
@@ -180,8 +196,8 @@ if submit:
                     f"Score: {st.session_state.score}"
                 )
 
-    st.session_state[f"guess_input_{difficulty}"] = ""
-    st.rerun()
+    if st.session_state.status == "playing":
+        st.rerun()
 
 st.divider()
 st.caption("Built by an AI that claims this code is production-ready.")
