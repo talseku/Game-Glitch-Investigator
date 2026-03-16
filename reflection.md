@@ -3,18 +3,25 @@
 Answer each question in 3 to 5 sentences. Be specific and honest about what actually happened while you worked. This is about your process, not trying to sound perfect.
 
 ## 1. What was broken when you started?
+BUG 1:
+Expected: The "Attempts" counter starts off at 0 before the user inputs any guesses and is incremented with each guess until the number of attempts is equal to the number of attempts associated with the difficulty.
+Actual: The "Attempts" counter starts off at 1 and increases with each guess EXCEPT the first and second-to-last, stopping on the correct value (based on difficulty)
 
-- What did the game look like the first time you ran it?
-- List at least two concrete bugs you noticed at the start  
-  (for example: "the secret number kept changing" or "the hints were backwards").
+BUG2:
+Expected: "Make a guess" instructions display a range of numbers for the user to guess from that aligns with the current difficulty level.
+Actual: "Make a guess" instructions display "Guess a number between 1 and 100" regardless of the difficulty level.
 
 ---
 
 ## 2. How did you use AI as a teammate?
+AI TOOL:
+Claude
 
-- Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
-- Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
-- Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
+CORRECT AI SUGGESTION:
+Since the update_score function was so confused, I was having a hard time understanding what the original scoring system was supposed to be. I asked the AI to explain the original direction of the function and, after reading the description, I decided to ask the AI to suggest an entirely new scoring system, and it correctly suggested a simplified scoring system. To verify it, I ensured that the system removed the possibility of negative scores and provided code that was functional through testing.
+
+INCORRECT/MISLEADING AI SUGGESTION:
+When I asked the AI which lines I need to modify to fix all issues with bounds and attempts (not being aligned with the difficulty), it left out a few lines in its recommendations. To verify, I read experiemented with the program myself and noticed areas where the bounds may be an issue. I then read over those sections of code and was able to catch that the AI had skipped some lines and ask about those issues specifically.
 
 ---
 

@@ -1,0 +1,28 @@
+Game Glitch Investigator
+My Bug Observations:
+* "Attempts left" starts off one less than attempts allowed (attepts used starts off at 1)
+* "Attempts left" does not decrement after first guess
+* Hint says "Go LOWER" when guess is less than secret
+* Hint not shown after 4th "go lower"
+* Guess not added to history, so history does not align with "Attempts"
+* Outputs "Out of attemps" when "Attempts left" is still 1
+* Can still submit guess after game over
+* Game does not reset with "new game"
+* Easy (1-20; 6), Normal (1-100; 8), Hard (1-50; 5)
+* Guess a number instructions say 1 and 100 regardless of difficulty
+* Says "go higher" when guessed 100 in range 1 to 100
+* Difficulty levels are not logical: Easy (1-20; 6), Normal (1-100; 8), Hard (1-50; 5)
+* Secret number does not always fall in number range of difficulty
+* Score occasionally alternates between increasing and decreasing with incorrect attempts
+* Secret number occasionally changes
+
+Additional AI Bug Observations:
+Critical
+* Program alternates between typecasting the secret number to be a string on even attempts
+* It is possible for the score to get very lower
+* The score is increased by 5 on even attempts and decreased by 5 on off attempts for "too high" guesses
+* Session state remains the same after chaning difficulty
+Medium-Priority
+* Invalid guesses are still added to guess history and counted as attempts
+* Hint checkbox is recreated on every render
+* Page is not rerun after guess submission, so the interface isn't refreshed to update hint and count
