@@ -10,7 +10,7 @@ def get_range_for_difficulty(difficulty: str):
         return 1, 100
 
 def parse_guess(raw: str, low: int, high: int):
-    if raw is (None or ""):
+    if not raw:
         return False, None, "Enter a guess."
 
     try:
@@ -180,6 +180,7 @@ if submit:
                     f"Score: {st.session_state.score}"
                 )
 
+    st.session_state[f"guess_input_{difficulty}"] = ""
     st.rerun()
 
 st.divider()
