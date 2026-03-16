@@ -61,6 +61,18 @@ difficulty = st.sidebar.selectbox(
     index=1,
 )
 
+def check_difficulty():
+    if "current_difficulty" not in st.session_state:
+        st.session_state.current_difficulty = difficulty
+
+    if st.session_state.current_difficulty != difficulty:
+        st.session_state.current_difficulty = difficulty
+        st.session_state.secret = random.randint(low, high)
+        st.session_state.attempts = 0
+        st.session_state.score = 0
+        st.session_state.status = "playing"
+        st.session_state.history = []
+
 attempt_limit_map = {
     "Easy": 8,
     "Normal": 6,
@@ -77,7 +89,7 @@ if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
 
 if "attempts" not in st.session_state:
-    st.session_state.attempts = 1
+    st.session_state.attempts = 0
 
 if "score" not in st.session_state:
     st.session_state.score = 0
