@@ -3,13 +3,7 @@ import streamlit as st
 
 def init_game(low, high):
     if "secret" not in st.session_state:
-        st.session_state.secret = random.randint(low, high)
-        st.session_state.attempts = 0
-        st.session_state.score = 100
-        st.session_state.status = "playing"
-        st.session_state.history = []
-        st.session_state.last_hint = None
-        st.session_state.balloons_displayed = False
+        reset_game(low, high)
 
 def get_range_for_difficulty(difficulty: str):
     if difficulty == "Easy":
@@ -20,16 +14,14 @@ def get_range_for_difficulty(difficulty: str):
         return 1, 100
 
 def parse_guess(raw: str, low: int, high: int):
+    raw = raw.strip()
     if not raw:
         return False, None, "Enter a guess."
 
     try:
-        if "." in raw:
-            return False, None, "Guess must be a whole number."
-        else:
-            value = int(raw)
+        value = int(raw)
     except ValueError:
-        return False, None, "That is not a number."
+        return False, None, "Guess must be a whole number."
 
     if value < low or value > high:
         return False, None, f"Guess must be between {low} and {high}."
@@ -37,11 +29,9 @@ def parse_guess(raw: str, low: int, high: int):
     return True, value, None
 
 def check_guess(guess, secret):
-    secret_int = int(secret)
-    
-    if guess == secret_int:
+    if guess == secret:
         return "Win", "🎉 Correct!"
-    elif guess > secret_int:
+    elif guess > secret:
         return "Too High", "📉 Go LOWER!"
     else:
         return "Too Low", "📈 Go HIGHER!"
@@ -103,7 +93,7 @@ st.subheader("Make a guess")
 
 st.info(
     f"Guess a number between {low} and {high}. "
-    f"Attempts left: {attempt_limit - st.session_state.attempts}"
+    f"Attempts left: {max(0, attempt_limit - st.session_state.attempts)}"
 )
 
 with st.expander("Developer Debug Info"):
@@ -119,7 +109,7 @@ if st.session_state.balloons_displayed:
 
 raw_guess = st.text_input(
     "Enter your guess:",
-    key=f"guess_input_{difficulty}"
+    key="guess_input"
 )
 
 col1, col2, col3 = st.columns(3)
@@ -137,7 +127,7 @@ if show_hint != st.session_state.prev_show_hint:
     st.session_state.prev_show_hint = show_hint
     st.rerun()
 
-if "last_hint" in st.session_state and st.session_state.last_hint and st.session_state.show_hint_checkbox:
+if st.session_state.last_hint and show_hint:
     st.warning(st.session_state.last_hint)
 
 if new_game:
