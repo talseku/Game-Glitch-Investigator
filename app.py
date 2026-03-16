@@ -154,7 +154,18 @@ if new_game:
     st.success("New game started.")
     st.rerun()
 
-if st.session_state.status == "lost":
+if st.session_state.status == "won":
+    st.success(
+        f"You won! The secret was {st.session_state.secret}. "
+        f"Final score: {st.session_state.score}"
+    )
+elif st.session_state.status == "lost":
+    st.error(
+        f"Out of attempts! The secret was {st.session_state.secret}. "
+        f"Score: {st.session_state.score}"
+    )
+
+if st.session_state.status != "playing":
     st.stop()
 
 if submit:
@@ -174,21 +185,16 @@ if submit:
             outcome=outcome,
         )
 
-    st.rerun()
+        if outcome == "Win":
+            st.session_state.balloons_displayed = True
+            st.session_state.status = "won"
 
-if st.session_state.status == "won":
-    st.success(
-        f"You won! The secret was {st.session_state.secret}. "
-        f"Final score: {st.session_state.score}"
-    )
-    st.stop()
-elif st.session_state.status == "lost":
-    st.error(
-        f"Out of attempts! "
-        f"The secret was {st.session_state.secret}. "
-        f"Score: {st.session_state.score}"
-    )
-    st.stop()
+        else:
+            if st.session_state.attempts >= attempt_limit:
+                st.session_state.status = "lost"
+                st.session_state.score = update_score(st.session_state.score, "Lost")
+
+    st.rerun()
 
 st.divider()
 st.caption("Built by an AI that claims this code is production-ready.")
