@@ -194,7 +194,7 @@ if submit:
                 st.session_state.status = "lost"
                 st.session_state.score = update_score(st.session_state.score, "Lost")
 
-    st.rerun()
+        st.rerun()
 
 st.divider()
 st.caption("Built by an AI that claims this code is production-ready.")
