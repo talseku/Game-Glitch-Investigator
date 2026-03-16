@@ -100,6 +100,9 @@ if "status" not in st.session_state:
 if "history" not in st.session_state:
     st.session_state.history = []
 
+if "balloons_displayed" not in st.session_state:
+    st.session_state.balloons_displayed = False
+
 st.subheader("Make a guess")
 
 st.info(
@@ -113,6 +116,10 @@ with st.expander("Developer Debug Info"):
     st.write("Score:", st.session_state.score)
     st.write("Difficulty:", difficulty)
     st.write("History:", st.session_state.history)
+
+if st.session_state.balloons_displayed:
+    st.balloons()
+    st.session_state.balloons_displayed = False
 
 raw_guess = st.text_input(
     "Enter your guess:",
@@ -144,6 +151,7 @@ if new_game:
     st.session_state.score = 0
     st.session_state.history = []
     st.session_state.last_hint = None
+    st.session_state.balloons_displayed = False
     st.success("New game started.")
     st.rerun()
 
@@ -173,7 +181,7 @@ if submit:
         )
 
         if outcome == "Win":
-            st.balloons()
+            st.session_state.balloons_displayed = True
             st.session_state.status = "won"
             st.success(
                 f"You won! The secret was {st.session_state.secret}. "
