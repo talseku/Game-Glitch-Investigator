@@ -61,10 +61,10 @@ difficulty = st.sidebar.selectbox(
     index=1,
 )
 
-def check_difficulty():
+def check_difficulty_change(difficulty, low, high):
     if "current_difficulty" not in st.session_state:
         st.session_state.current_difficulty = difficulty
-
+    
     if st.session_state.current_difficulty != difficulty:
         st.session_state.current_difficulty = difficulty
         st.session_state.secret = random.randint(low, high)
@@ -72,6 +72,7 @@ def check_difficulty():
         st.session_state.score = 0
         st.session_state.status = "playing"
         st.session_state.history = []
+        st.rerun()
 
 attempt_limit_map = {
     "Easy": 8,
@@ -81,6 +82,7 @@ attempt_limit_map = {
 attempt_limit = attempt_limit_map[difficulty]
 
 low, high = get_range_for_difficulty(difficulty)
+check_difficulty_change(difficulty, low, high)
 
 st.sidebar.caption(f"Range: {low} to {high}")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
@@ -125,7 +127,7 @@ with col1:
 with col2:
     new_game = st.button("New Game 🔁")
 with col3:
-    show_hint = st.checkbox("Show hint", value=True)
+    show_hint = st.checkbox("Show hint", key="show_hint_checkbox", value=True)
 
 if new_game:
     st.session_state.attempts = 0
