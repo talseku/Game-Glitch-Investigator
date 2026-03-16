@@ -1,6 +1,16 @@
 import random
 import streamlit as st
 
+def init_game(low, high):
+    if "secret" not in st.session_state:
+        st.session_state.secret = random.randint(low, high)
+        st.session_state.attempts = 0
+        st.session_state.score = 100
+        st.session_state.status = "playing"
+        st.session_state.history = []
+        st.session_state.last_hint = None
+        st.session_state.balloons_displayed = False
+
 def get_range_for_difficulty(difficulty: str):
     if difficulty == "Easy":
         return 1, 20
@@ -48,7 +58,7 @@ def update_score(current_score: int, outcome: str):
 st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
 
 st.title("🎮 Game Glitch Investigator")
-st.caption("An AI-generated guessing game. Something is off.")
+st.caption("An AI-generated guessing game. Nothing is off. (hopefully)")
 
 st.sidebar.header("Settings")
 
@@ -58,17 +68,21 @@ difficulty = st.sidebar.selectbox(
     index=1,
 )
 
+def reset_game(low, high):
+    st.session_state.secret = random.randint(low, high)
+    st.session_state.attempts = 0
+    st.session_state.score = 100
+    st.session_state.status = "playing"
+    st.session_state.history = []
+    st.session_state.last_hint = None
+    st.session_state.balloons_displayed = False
+
 def check_difficulty_change(difficulty, low, high):
     if "current_difficulty" not in st.session_state:
         st.session_state.current_difficulty = difficulty
-    
     if st.session_state.current_difficulty != difficulty:
         st.session_state.current_difficulty = difficulty
-        st.session_state.secret = random.randint(low, high)
-        st.session_state.attempts = 0
-        st.session_state.score = 100
-        st.session_state.status = "playing"
-        st.session_state.history = []
+        reset_game(low, high)
         st.rerun()
 
 attempt_limit_map = {
@@ -80,27 +94,10 @@ attempt_limit = attempt_limit_map[difficulty]
 
 low, high = get_range_for_difficulty(difficulty)
 check_difficulty_change(difficulty, low, high)
+init_game(low, high)
 
 st.sidebar.caption(f"Range: {low} to {high}")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
-
-if "secret" not in st.session_state:
-    st.session_state.secret = random.randint(low, high)
-
-if "attempts" not in st.session_state:
-    st.session_state.attempts = 0
-
-if "score" not in st.session_state:
-    st.session_state.score = 100
-
-if "status" not in st.session_state:
-    st.session_state.status = "playing"
-
-if "history" not in st.session_state:
-    st.session_state.history = []
-
-if "balloons_displayed" not in st.session_state:
-    st.session_state.balloons_displayed = False
 
 st.subheader("Make a guess")
 
@@ -144,13 +141,7 @@ if "last_hint" in st.session_state and st.session_state.last_hint and st.session
     st.warning(st.session_state.last_hint)
 
 if new_game:
-    st.session_state.attempts = 0
-    st.session_state.secret = random.randint(low, high)
-    st.session_state.status = "playing"
-    st.session_state.score = 100
-    st.session_state.history = []
-    st.session_state.last_hint = None
-    st.session_state.balloons_displayed = False
+    reset_game(low, high)
     st.success("New game started.")
     st.rerun()
 

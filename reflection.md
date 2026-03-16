@@ -1,7 +1,5 @@
 # 💭 Reflection: Game Glitch Investigator
 
-Answer each question in 3 to 5 sentences. Be specific and honest about what actually happened while you worked. This is about your process, not trying to sound perfect.
-
 ## 1. What was broken when you started?
 BUG 1:
 Expected: The "Attempts" counter starts off at 0 before the user inputs any guesses and is incremented with each guess until the number of attempts is equal to the number of attempts associated with the difficulty.
@@ -21,30 +19,26 @@ CORRECT AI SUGGESTION:
 Since the update_score function was so confused, I was having a hard time understanding what the original scoring system was supposed to be. I asked the AI to explain the original direction of the function and, after reading the description, I decided to ask the AI to suggest an entirely new scoring system, and it correctly suggested a simplified scoring system. To verify it, I ensured that the system removed the possibility of negative scores and provided code that was functional through testing.
 
 INCORRECT/MISLEADING AI SUGGESTION:
-When I asked the AI which lines I need to modify to fix all issues with bounds and attempts (not being aligned with the difficulty), it left out a few lines in its recommendations. To verify, I read experiemented with the program myself and noticed areas where the bounds may be an issue. I then read over those sections of code and was able to catch that the AI had skipped some lines and ask about those issues specifically.
+I decided that I wanted the "Developer Debug Info" section to display the score that the player WOULD receive if they won the game on that turn.
+I asked the AI to help with this and it gaslit me and tried for a good few minutes to reassure me that the code did, in fact, accurately track the score and provided multiple "fixed" versions of the code that did not actually fix the code when I ran the game to verify.
+It was not until I experiemented further with the game that I realized that the score DID update, but only if you added an extra submission after the game was complete.
+From there, I was able to provide that information to the AI and it only took a couple more prompts to get the Score working.
 
 ---
 
 ## 3. Debugging and testing your fixes
-
-- How did you decide whether a bug was really fixed?
-- Describe at least one test you ran (manual or using pytest)  
-  and what it showed you about your code.
-- Did AI help you design or understand any tests? How?
+To decide whether a bug was really fixed, I compared my experience running the game to what I expected from the game. I ran into an issue with the balloons not being displayed upon wins, and it ended up coming down to an issue with then I was rerunning. 
+This helped me connect the dots with where some of my other errors were coming from later on as well as informed what tests I did (focusing on bugs in the program that might be caused by incorrect rerunning). 
+AI helped me design and understand my tests by acting as a teacher and explaining what the issue was with rerunning to begin with.
 
 ---
 
 ## 4. What did you learn about Streamlit and state?
-
-- In your own words, explain why the secret number kept changing in the original app.
-- How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
-- What change did you make that finally gave the game a stable secret number?
+I think that a reason for the changing secret number in the original app probably had something to do with the session state being cleared by the reruns.
+Streamlit "reruns" are (like the name suggests) literally rerunning the entire script to keep the interface updated. They happen automatically with user interactions or you can call them manually with streamlit.rerun() or st.rerun() if you imported streamlit as st.
+To finally get a stable secret number, AI ended up suggesting that I consolidate all of the billions of lines checking if different values were already in the state into one init function so that im not constantly debugging one part of my code and then realizing that I just created more bugs by resetting something else I had already debugged.
 
 ---
 
 ## 5. Looking ahead: your developer habits
-
-- What is one habit or strategy from this project that you want to reuse in future labs or projects?
-  - This could be a testing habit, a prompting strategy, or a way you used Git.
-- What is one thing you would do differently next time you work with AI on a coding task?
-- In one or two sentences, describe how this project changed the way you think about AI generated code.
+One strategy I want to reuse in future projects is providing the AI with as much information as possible. Honestly, I used to take for granted how much AI was able to correctly assume. However, upon suffering through the torture of having the left half of my screen red with errors and the right half actively trying to gaslight me to my face by insisting that the AI generated code works, I am likely to be less trusting of AI responses and more likely to provide AI with additional information to increase the accuracy of the generated code.
